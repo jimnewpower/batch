@@ -46,7 +46,7 @@ Cons:
 * Steeper learning curve
 
 ## Demo Data
-Demo data is a CSV file with 3600 records. Each row contains two UUIDs: the first id represents a user id, while the second id represents a transaction id. The same user id may appear multiple times in the file, while each transaction id is unique. The idea here is that you can use the user id to lookup the user in a database, and then use the transaction id to lookup the transaction in a database.
+Demo data is a CSV file with 3600 records. Each row contains two UUIDs: the first id represents a user id, while the second id represents a transaction id. The same user id may appear multiple times in the file, while each transaction id is unique. The idea here is that you can use the user id to lookup the user information (name, etc.) in a database, and then use the transaction id to lookup the transaction information (vendor, amount, timestamp, etc.) in a database.
 
 
 
