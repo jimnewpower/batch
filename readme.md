@@ -24,7 +24,7 @@ Pros:
 * [Good documentation](https://github.com/j-easy/easy-batch/wiki/getting-started)
 
 Cons:
-* No recent updates (last update was 2020)
+* Project is in maintenance mode: no new features, only bug fixes
 * Limited community thus limited support
 
 ## [Spring Batch](https://spring.io/projects/spring-batch)
