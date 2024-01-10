@@ -4,6 +4,8 @@ This document provides options for batch processing implementations in Java.
 ## [Homegrown](https://github.com/jimnewpower/batch/tree/main/homegrown)
 Simplest solution is to write your own batch processing code. This is a good option if you have a small number of batch jobs and you don't need to scale. A LinkedBlockingQueue can be used to queue the work, and a thread pool can be used to process the work. 
 
+[Demo application](https://github.com/jimnewpower/batch/tree/main/homegrown) is a spring boot console application.
+
 Pros:
 * Simple
 * No dependencies
@@ -16,6 +18,8 @@ Cons:
 
 ## [Easy Batch](https://github.com/j-easy/easy-batch)
 Easy Batch is a 3rd party framework for batch processing. It provides a simple programming model that includes a JobBuilder, JobExecutor, and JobReport.
+
+[Demo application](https://github.com/jimnewpower/batch/tree/main/easy) is a spring boot console application.
 
 Pros:
 * Open source, and available on Maven Central
