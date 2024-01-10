@@ -1,9 +1,6 @@
 package com.example.homegrown;
 
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-
-import java.io.*;
+import java.io.PrintStream;
 import java.util.*;
 
 /**
@@ -29,6 +26,7 @@ class BatchJob<T> implements Runnable {
 
         // create the batcher, including the consumer that will process the data
         Batcher<T> batcher = new Batcher<>(maxTasksToQueue, data -> {
+            // process the chunk of data for a single batch job
             List<T> content = new ArrayList<>(data);
             printStream.println("** Batch Operation " + UUID.randomUUID());
             content.forEach(printStream::println);
