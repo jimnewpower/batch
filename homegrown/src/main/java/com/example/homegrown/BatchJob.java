@@ -27,12 +27,14 @@ class BatchJob<T> implements Runnable {
         printStream.println("Processing batch job...");
         printStream.println();
 
+        // create the batcher, including the consumer that will process the data
         Batcher<T> batcher = new Batcher<>(maxTasksToQueue, data -> {
             List<T> content = new ArrayList<>(data);
             printStream.println("** Batch Operation " + UUID.randomUUID());
-            content.stream().forEach(printStream::println);
+            content.forEach(printStream::println);
         });
 
+        // read the data and submit to the batcher
         Collection<T> data = resourceReader.read();
         data.forEach(batcher::submit);
 

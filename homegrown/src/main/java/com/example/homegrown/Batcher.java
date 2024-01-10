@@ -17,7 +17,7 @@ class Batcher<T> implements TaskHandler<T> {
     private Thread workerThread;
     private boolean isRunning = false;
 
-    public Batcher(int maxTasksToQueue, Consumer<List<T>> taskConsumer) {
+    Batcher(int maxTasksToQueue, Consumer<List<T>> taskConsumer) {
         this.maxTasksToQueue = maxTasksToQueue;
         this.workerThread = new Thread(batchHandler(taskConsumer));
         this.workerThread.setDaemon(true);
