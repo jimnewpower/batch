@@ -13,7 +13,9 @@ public class HomegrownApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		BatchJob batchJob = new BatchJob("mock_transactions.csv");
+		ResourceReaderText resourceReaderText = new ResourceReaderText("mock_transactions.csv");
+		final int maxTasksToQueue = 5;
+		BatchJob<String> batchJob = new BatchJob<>(maxTasksToQueue, resourceReaderText, System.out);
 		batchJob.run();
 	}
 }

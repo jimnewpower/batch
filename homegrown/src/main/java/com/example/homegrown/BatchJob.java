@@ -4,56 +4,45 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
-public class BatchJob implements Runnable {
+/**
+ * A batch job that will read a file and batch process the data.
+ */
+class BatchJob<T> implements Runnable {
 
-    private String resourceName;
-
-    public BatchJob(String resourceName) {
-        this.resourceName = Objects.requireNonNull(resourceName, "resource name");
+    private final int maxTasksToQueue;
+    private final ResourceReader<T> resourceReader;
+    private final PrintStream printStream;
+    
+    BatchJob(int maxTasksToQueue, ResourceReader<T> resourceReader, PrintStream printStream) {
+        this.maxTasksToQueue = Math.max(1, maxTasksToQueue);
+        this.resourceReader = Objects.requireNonNull(resourceReader, "resource reader");
+        this.printStream = Objects.requireNonNull(printStream, "print stream");
     }
 
     @Override
     public void run() {
-        System.out.println();
-        System.out.println("Processing batch job for input: " + resourceName);
-        System.out.println();
+        printStream.println();
+        printStream.println("Processing batch job...");
+        printStream.println();
 
-        Batcher batcher = new Batcher<String>(10, strings -> {
-            List<String> content = new ArrayList<>(strings);
-            System.out.println("******* Batch Operation *******");
-            content.stream().filter(s -> !s.startsWith(TransactionFields.USER_ID.toString())).forEach(System.out::println);
+        Batcher<T> batcher = new Batcher<>(maxTasksToQueue, data -> {
+            List<T> content = new ArrayList<>(data);
+            printStream.println("** Batch Operation " + UUID.randomUUID());
+            content.stream().forEach(printStream::println);
         });
 
-        List<String> lines = readLines();
-        lines.stream().forEach(batcher::submit);
+        Collection<T> data = resourceReader.read();
+        data.forEach(batcher::submit);
 
+        // start timer and wait for batcher to finish
         long start = System.currentTimeMillis();
 
         while (!batcher.isFinished()) {
             ;
         }
 
-        System.out.println("Elapsed time for batch job: " + (System.currentTimeMillis() - start));
-    }
-
-    private List<String> readLines() {
-        List<String> lines = new ArrayList<>();
-        Resource resource = new ClassPathResource(resourceName);
-        try (
-            InputStream inputStream = resource.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))
-        ) {
-            String line = null;
-            while ((line = reader.readLine()) != null) {
-                lines.add(line);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return lines;
+        printStream.println("Elapsed time for batch job: " + (System.currentTimeMillis() - start));
     }
 }

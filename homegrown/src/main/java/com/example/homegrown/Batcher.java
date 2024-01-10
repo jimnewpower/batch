@@ -6,6 +6,11 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
+/**
+ * A batcher that will batch up to maxTasksToQueue tasks and then submit them to the taskConsumer.
+ *
+ * @param <T> the type of data to batch
+ */
 class Batcher<T> implements TaskHandler<T> {
     private BlockingQueue<T> taskQueue = new LinkedBlockingQueue<>();
     private int maxTasksToQueue;
