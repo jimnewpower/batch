@@ -25,8 +25,8 @@ class ResourceReaderText implements ResourceReader<String> {
         List<String> lines = new ArrayList<>();
         Resource resource = new ClassPathResource(resourceName);
         try (
-                InputStream inputStream = resource.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))
+            InputStream inputStream = resource.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))
         ) {
             String line = null;
             while ((line = reader.readLine()) != null) {

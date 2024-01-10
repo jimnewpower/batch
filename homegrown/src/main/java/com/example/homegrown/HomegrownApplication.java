@@ -4,6 +4,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.util.UUID;
+
 @SpringBootApplication
 public class HomegrownApplication implements CommandLineRunner {
 
@@ -12,10 +14,10 @@ public class HomegrownApplication implements CommandLineRunner {
 	}
 
 	@Override
-	public void run(String... args) throws Exception {
-		ResourceReaderText resourceReaderText = new ResourceReaderText("mock_transactions.csv");
-		final int maxTasksToQueue = 5;
-		BatchJob<String> batchJob = new BatchJob<>(maxTasksToQueue, resourceReaderText, System.out);
+	public void run(String... args) {
+		ResourceReader<String> resourceReader = new ResourceReaderText("mock_transactions.csv");
+		final int maxTasksToQueue = 50;
+		BatchJob<String> batchJob = new BatchJob<>(maxTasksToQueue, resourceReader, System.out);
 		batchJob.run();
 	}
 }
