@@ -1,5 +1,5 @@
 # Batch
-This document provides options for batch processing implementations in Java. 
+This document provides options for batch processing implementations in Java. I have evaluated 3 options: homegrown, easy batch, and spring batch. Each option has a demo application that reads a CSV file and writes the data to the console. The demo applications are implemented as spring boot console applications.
 
 ## [Homegrown](https://github.com/jimnewpower/batch/tree/main/homegrown)
 Simplest solution is to write your own batch processing code. This is a good option if you have a small number of batch jobs and you don't need to scale. A LinkedBlockingQueue can be used to queue the work, and a thread pool can be used to process the work. 
