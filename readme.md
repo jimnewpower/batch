@@ -1,6 +1,52 @@
 # Batch
 This document provides options for batch processing implementations in Java. I have evaluated 3 options: homegrown, easy batch, and spring batch. Each option has a demo application that reads a CSV file and writes the data to the console. The demo applications are implemented as spring boot console applications.
 
+Key characteristics of a batch processing system include:
+* Not required to run in real-time (can be scheduled to run overnight, for instance)
+* A volume of data is processed (not a single record)
+* Does not require human input or user interaction
+
+## Requirements
+The batch processor should be a completely automated, end-of-cycle process that runs once a month.
+
+Must-haves
+* Exactly once processing (idempotency)
+* Accurate
+* Reliable
+* Error handling
+* Apply business rules
+* Reporting
+
+Nice-to-haves
+* Scalable
+* High performance
+* Monitoring
+* Start/stop
+* Retry
+
+Architectural Characteristics
+* Auditability
+* Data integrity
+* Security
+* Performance
+
+Logical Components
+* Scheduler (+configuration)
+* Job Runner (+configuration)
+* Job Launcher
+* Job
+* Job Repository
+* Step
+* Data Access
+* Processing Units (ItemReader, ItemProcessor, ItemWriter)
+* Business Logic
+
+## The Batch Job
+A named job that defines the steps to be executed. A job can be executed multiple times, where each execution is a job instance. Jobs may be stoppable and restartable. A job instance must be provided a set of parameters which define its contract. The execution of a job should update the status of a job instance, e.g. STARTED, COMPLETED, FAILED, as well as timestamps for start and end times, and an exit status; all of these execution properties should be persisted to a job repository.
+
+Steps
+Steps represent independent, sequential phases of a job (chain of responsibility pattern). Steps allow for data loading, applying business rules, transforming or mapping the data (processing), and writing the data or executing an external API call.
+
 ## [Homegrown](https://github.com/jimnewpower/batch/tree/main/homegrown)
 Simplest solution is to write your own batch processing code. This is a good option if you have a small number of batch jobs and you don't need to scale. A LinkedBlockingQueue can be used to queue the work, and a thread pool can be used to process the work. 
 

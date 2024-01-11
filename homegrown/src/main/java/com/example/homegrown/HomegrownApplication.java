@@ -4,9 +4,11 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 @SpringBootApplication
 public class HomegrownApplication implements CommandLineRunner {
@@ -17,12 +19,28 @@ public class HomegrownApplication implements CommandLineRunner {
 	}
 
 	@Override
-	public void run(String... args) {
+	public void run(String... args) throws IOException {
+		Database database = Database.create("employees_db.csv", "transactions_db.csv");
+
+		Function<String, UserTransaction> mapper = (String line) -> {
+			String[] fields = line.split(",");
+			return new UserTransaction(
+				fields[TransactionFields.USER_ID.ordinal()],
+				fields[TransactionFields.TRANSACTION_ID.ordinal()]
+			);
+		};
+
 		ExecutorService executorService = Executors.newFixedThreadPool(10);
-		ResourceReader<String> resourceReader = new ResourceReaderText(TRANSACTIONS_FILENAME);
-		final int maxTasksToQueue = 100;
-		BatchJob<String> batchJob = new BatchJob<>(executorService, maxTasksToQueue, resourceReader, System.out);
-		batchJob.run();
+
+		BatchProcess<String, UserTransaction> batchProcess = new BatchProcess.Builder()
+			.database(database)
+			.mapper(mapper)
+			.executorService(executorService)
+			.maxTasksToQueue(100)
+			.resourceReader(new ResourceReaderText(TRANSACTIONS_FILENAME))
+			.build();
+
+		batchProcess.run();
 		cleanup(executorService);
 	}
 
