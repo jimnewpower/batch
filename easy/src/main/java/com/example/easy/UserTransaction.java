@@ -1,11 +1,10 @@
 package com.example.easy;
 
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
-
 import java.util.Objects;
 
 public class UserTransaction {
     private String userId;
+
     private String transactionId;
 
     public UserTransaction() {
@@ -13,8 +12,8 @@ public class UserTransaction {
     }
 
     public UserTransaction(String userId, String transactionId) {
-        this.userId = userId;
-        this.transactionId = transactionId;
+        this.userId = Objects.requireNonNull(userId, "userId");
+        this.transactionId = Objects.requireNonNull(transactionId, "transactionId");
     }
 
     public String getUserId() {

@@ -7,8 +7,8 @@ Simplest solution is to write your own batch processing code. This is a good opt
 [Demo application](https://github.com/jimnewpower/batch/tree/main/homegrown) is a spring boot console application.
 
 Pros:
-* Simple
 * No dependencies
+* Low overhead, nothing hidden
 * Total control of implementation
 
 Cons:
@@ -30,6 +30,8 @@ Pros:
 Cons:
 * Project is in maintenance mode: no new features, only bug fixes
 * Limited community thus limited support
+* Dependencies
+* 3rd Party libraries can be prone to vulnerabilities
 
 ## [Spring Batch](https://spring.io/projects/spring-batch)
 Spring Batch is a robust framework for development of batch applications. Optimized for speed and scalability. 

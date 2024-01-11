@@ -41,6 +41,60 @@
             <version>${jeasy.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.jeasy</groupId>
+            <artifactId>easy-batch-xml</artifactId>
+            <version>${jeasy.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jeasy</groupId>
+            <artifactId>easy-batch-jdbc</artifactId>
+            <version>${jeasy.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jeasy</groupId>
+            <artifactId>easy-batch-hibernate</artifactId>
+            <version>${jeasy.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jeasy</groupId>
+            <artifactId>easy-batch-validation</artifactId>
+            <version>${jeasy.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jeasy</groupId>
+            <artifactId>easy-batch-spring</artifactId>
+            <version>${jeasy.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jeasy</groupId>
+            <artifactId>easy-batch-jms</artifactId>
+            <version>${jeasy.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jeasy</groupId>
+            <artifactId>easy-batch-json</artifactId>
+            <version>${jeasy.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jeasy</groupId>
+            <artifactId>easy-batch-xstream</artifactId>
+            <version>${jeasy.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jeasy</groupId>
+            <artifactId>easy-batch-integration</artifactId>
+            <version>${jeasy.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
