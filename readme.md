@@ -172,6 +172,8 @@ Key characteristics of a batch processing system include:
 * A volume of data is processed (not a single record)
 * Runs at a scheduled time or interval (usually after hours)
 
+![Batch Processing](images/batch_processing.png)
+
 ## The Batch Job
 A named job that defines the steps to be executed. A job can be executed multiple times, where each execution is a job instance. Jobs may be stoppable and restartable. A job instance must be provided a set of parameters which define its contract. The execution of a job should update the status of a job instance, e.g. STARTED, COMPLETED, FAILED, as well as timestamps for start and end times, and an exit status; all of these execution properties should be persisted to a job repository.
 
