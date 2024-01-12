@@ -2,16 +2,17 @@
 Build a credit card payment system to integrate with an existing expense reporting application and/or its data. The system shall aggregate charges from a given time period for each employee or contractor, and then initiate a bank transfer to pay the credit card bill on their behalf. The system shall be an automated, end-of-cycle process that runs at a specified time interval. Note that logic shall be applied in order to validate or invalidate specific charges based on an existing expert system.
 
 # Prerequisites
-* Enroll in ACH services with bank(s). Securely store credentials.
+* Enroll in ACH services with bank(s). Securely store account and API credentials.
 * Add payees (credit card companies) to bank ACH service.
-* Review bank(s) ACH API documentation to determine minimum required data for ACH payment initiation API calls.
+* Review bank(s) ACH API documentation to determine minimum required data for ACH payment initiation API calls and ensure that API suits the needs of the system (idempotency via globally unique identifiers per transaction).
 
 # Assumptions
 * A corporate credit card is associated with an employee or contractor within the system.
 * A monthly credit card statement can be generated for each employee or contractor.
-* A payment date can be determined for any given corporate credit card, and credit card bills are paid in full monthly. While the credit card bill is paid in full, the employee or contractor may still owe the company money for non-compliant charges.
-* Credit card disputes are handled outside of the system.
+* A payment date can be determined for any given corporate credit card, and credit card bills are paid in full monthly. While the credit card bill is paid in full, the employee or contractor may still owe the company money for non-compliant charges (system must report this).
+* Credit card disputed charges are handled outside of the system.
 * Logic shall be developed to reconcile expense-reporting system data with credit card charges. Any discrepancies will be reported to the employee or contractor.
+* All monetary values are in USD. If this is insufficient, a currency converter will be required.
 
 If any of the above assumptions are not true, then the system will need to be modified accordingly.
 
@@ -19,26 +20,26 @@ If any of the above assumptions are not true, then the system will need to be mo
 * ACH debit/pull bank transfer: generate an ACH file and initiate a bank transfer via an API call. Requires bank account information (account number, routing number, etc.), as well as debit authorization.
 * Exactly once processing (idempotency): processing the same data twice will not result in double-payment.
 * Start/stop/retry (checkpoint/restart): record information in each step so that it can be restarted in case of an abnormal termination.
-* Security: data is encrypted in transit and at rest. Authentication for API calls. Protect account information and API credentials.
-* Asynchronous: the batch job should not block the caller.
-* Accurate: the batch job should process all of the data.
+* Security: sensitive data (credit card info, bank account info) is encrypted in transit and at rest. Authentication for API calls. Protect account information and API credentials.
+* Asynchronous: the batch job should not block the caller, meaning that a system must be in place to receive the transaction status result.
+* Accurate: the batch job should process all of the data, even in case of an aborted transaction.
 * Reliable: failures are handled gracefully (error handling, retry).
 * Apply business rules to the data for compliance and validation.
-* Reporting, logging, and audit trails to analyze batch jobs.
+* Reporting, logging, and audit trails to analyze batch jobs for success/failure/retry, etc.
 
 # Nice-to-haves
 * High performance
 * Fully automated (no manual processes)
 
 # Architectural Characteristics (Key Constraints)
-Sometimes known as non-functional requirements, these are the characteristics that define the architecture of the system. Desired characteristics include:  
+Sometimes known as non-functional requirements, these are the characteristics that define the architecture of the system outside of the problem domain. Desired characteristics include:  
 * Security (a tradeoff with performance)
 * Reliability (another tradeoff with performance)
 * Testability (demonstrate that the system works as expected in a sandbox environment)
 
 While performance is not a key architectural characteristic, I do not anticipate performance being an issue. Batch implementations are typically I/O bound, and not CPU bound. The batch job will be run once a month, and the data volume is not expected to be large.
 
-Scalability is not anticipated to be an issue due to relatively the low volume of data.
+Scalability is not anticipated to be an issue due to relatively the low volume of data, and the fact that batch jobs are scheduled instead of run in real time.
 
 # Logical and Domain-specific Components
 * Data ingestor: read pertient data over the specified time period from the database.
@@ -56,11 +57,13 @@ Scalability is not anticipated to be an issue due to relatively the low volume o
 * Bank transactor: initiate ACH bank transfer (ACH file generation and ACH API call to initiate payment)
 * Status tracker: observes jobs for their status
 
+A batch job cannot be started unless predefined criteria are met. Criteria could include an employee or contractor's charges are non-compliant, and need manager's approval, etc. In this case, the batch job should initiate the appropriate notifications, record the data, set a failure status, and exit.
+
 # Solution
 This solution will focus on the architecture of the middle-tier, and a backend data model to support it.
 
 # Backend
-Table model for the backend database. The backend database will be a relational database, and store the following data. Note that any sensitive data will be encrypted.
+Table model for the backend database. The backend database will be a relational database, and store the following data. Note that any sensitive data will be encrypted using Transparent Data Encryption (TDE). In Spring, we can use 128-bit AES encryption from the Java Cryptography Extension (JCE) framework. The encryption key(s) will be stored in a secure location, such as a key vault.
 
 User Table  
 | Column Name | Data Type | Description |
@@ -76,7 +79,7 @@ Transaction Table
 | transaction_id | UUID   | Unique id for the transaction |
 | employee_id    | UUID   | Unique id for the user |
 | vendor         | VARCHAR| Vendor name |
-| amount         | VARCHAR| Transaction amount |
+| amount         | VARCHAR| Transaction amount in USD |
 | timestamp      | DATE   | Transaction timestamp |
 | ...            | ...    | ... |
 
