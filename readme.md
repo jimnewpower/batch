@@ -100,20 +100,11 @@ Bank Table
 | bank_routing_number | VARCHAR | Bank routing number |
 | ...         | ...       | ... |
 
-Business Rulesets Table  
-| Column Name | Data Type | Description |
-| ----------- | --------- | ----------- |
-| ruleset_id  | UUID      | Unique id for the ruleset |
-| ruleset_name| VARCHAR   | Ruleset name |
-| ruleset_description | VARCHAR | Ruleset description |
-| ...         | ...       | ... |
-
 Batch Job Configuration Table  
 | Column Name | Data Type | Description |
 | ----------- | --------- | ----------- |
 | job_id      | UUID      | Unique id for the job |
 | job_name    | VARCHAR   | Job name |
-| job_description | VARCHAR | Job description |
 | ...         | ...       | ... |
 
 Batch Job Execution Table  
@@ -122,8 +113,43 @@ Batch Job Execution Table
 | bank_transaction_id | UUID | Unique id for the bank transaction |
 | job_id      | UUID      | Unique id for the job |
 | job_execution_id | UUID  | Unique id for the job execution |
-| job_execution_status | VARCHAR | Job execution status |
+| status | VARCHAR | Job execution status |
+| start_time | DATE | Job execution start time |
+| end_time | DATE | Job execution end time |
+| exit_status | VARCHAR | Job execution exit status |
 | ...         | ...       | ... |
+
+Batch Job Instance Table
+| Column Name | Data Type | Description |
+| ----------- | --------- | ----------- |
+| job_instance_id | UUID  | Unique id for the job instance |
+| job_name    | VARCHAR   | Job name |
+| ...         | ...       | ... |
+
+Batch Job Parameters Table
+| Column Name | Data Type | Description |
+| ----------- | --------- | ----------- |
+| job_instance_id | UUID  | Unique id for the job instance |
+| type        | VARCHAR   | Parameter type |
+| key         | VARCHAR   | Parameter key |
+| value       | VARCHAR   | Parameter value |
+| ...         | ...       | ... |
+
+Batch Step Execution Table
+| Column Name | Data Type | Description |
+| ----------- | --------- | ----------- |
+| step_execution_id | UUID  | Unique id for the step execution |
+| step_name   | VARCHAR   | Step name |
+| status | VARCHAR | Step execution status |
+| start_time | DATE | Step start time |
+| end_time | DATE | Step end time |
+| exit_status | VARCHAR | Step execution exit status |
+| execution_context | VARCHAR | Set of execution properties |
+| commit_count | INT | Number of transactions committed for this execution |
+| item_count | INT | Number of items processed for this execution |
+| ...         | ...       | ... |
+
+
 
 # Middle-tier
 The middle-tier will implement all [logical and domain-specific components](#logical-and-domain-specific-components) as well as the [low-level design patterns](#low-level-design-patterns). The middle-tier will be implemented as a spring boot application, and will expose an API to initiate batch jobs. The API will accept a request to initiate a batch job, and return a job id. The API will also accept a job id and return the status of the job. The API will be secured using OAuth2.0, and will require a bearer token to access. The API will be implemented using the [OpenAPI Specification](https://swagger.io/specification/).
