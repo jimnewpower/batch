@@ -41,6 +41,8 @@ While performance is not a key architectural characteristic, I do not anticipate
 
 Scalability is not anticipated to be an issue due to relatively the low volume of data, and the fact that batch jobs are scheduled instead of run in real time.
 
+The batch system should have its own database, separated from the current expense-reporting database. This will require a preprocessor to extract the data from the expense-reporting database and load it into the batch database. Keeping the databases separate will allow the batch system to be developed and tested independently of the expense-reporting system.
+
 # Logical and Domain-specific Components
 * Data ingestor: read pertient data over the specified time period from the database.
 * Charge aggregator: aggregates charges for a given time period for a given employee or contractor, and stores data in the batch job repository.
@@ -59,8 +61,8 @@ Scalability is not anticipated to be an issue due to relatively the low volume o
 
 A batch job cannot be started unless predefined criteria are met. Criteria could include an employee or contractor's charges are non-compliant, and need manager's approval, etc. In this case, the batch job should initiate the appropriate notifications, record the data, set a failure status, and exit.
 
-# Solution
-This solution will focus on the architecture of the middle-tier, and a backend data model to support it.
+# Future-proofing
+The system should be designed to run in a containerized environment, such as Docker or Kubernetes, deployed in a cloud or virtual private cloud. The database can be hosted and fully managed in the cloud. Deployments should be simplified by integrating with CI/CD early on. With a modern spring boot application, utilizing the latest versions of Java, Spring, and Spring Batch, the system should be able to run for many years without requiring a major upgrade.
 
 # Backend
 Table model for the backend database. The backend database will be a relational database, and store the following data. Note that any sensitive data will be encrypted using Transparent Data Encryption (TDE). In Spring, we can use 128-bit AES encryption from the Java Cryptography Extension (JCE) framework. The encryption key(s) will be stored in a secure location, such as a key vault.
@@ -148,7 +150,6 @@ Batch Step Execution Table
 | commit_count | INT | Number of transactions committed for this execution |
 | item_count | INT | Number of items processed for this execution |
 | ...         | ...       | ... |
-
 
 
 # Middle-tier
