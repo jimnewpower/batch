@@ -62,7 +62,7 @@ The batch system should have its own database, separated from the current expens
 A batch job cannot be started unless predefined criteria are met. Criteria could include an employee or contractor's charges are non-compliant, and need manager's approval, etc. In this case, the batch job should initiate the appropriate notifications, record the data, set a failure status, and exit.
 
 # Future-proofing
-The system should be designed to run in a containerized environment, such as Docker or Kubernetes, deployed in a cloud or virtual private cloud. The database can be hosted and fully managed in the cloud. Deployments should be simplified by integrating with CI/CD early on. With a modern spring boot application, utilizing the latest versions of Java, Spring, and Spring Batch, the system should be able to run for many years without requiring a major upgrade.
+The system should be designed to run in a containerized environment, such as Docker or Kubernetes, deployed in a cloud or virtual private cloud. Deployments should be simplified by integrating with CI/CD early on. The database can be hosted and fully managed in the cloud, which allows for simpler maintenance and automatic backups. Implementing a modern spring boot application, utilizing the latest versions of Java, Spring, and Spring Batch, will allow for a performant, maintainable system.
 
 # Backend
 Table model for the backend database. The backend database will be a relational database, and store the following data. Note that any sensitive data will be encrypted using Transparent Data Encryption (TDE). In Spring, we can use 128-bit AES encryption from the Java Cryptography Extension (JCE) framework. The encryption key(s) will be stored in a secure location, such as a key vault.
@@ -168,10 +168,20 @@ The middle-tier will implement all [logical and domain-specific components](#log
 * Observer: the job launcher is the subject, and the job runner is the observer.
 
 # Batch Processing
-Key characteristics of a batch processing system include:
-* Not required to run in a real-time (stream processing) environment; can be scheduled to run overnight, for instance
-* A volume of data is processed (not a single record)
-* Runs at a scheduled time or interval (usually after hours)
+Why use a batch processor? Batch processing is useful when you need to process a large volume of data, and you don't need to process the data in real time. Key characteristics of a batch processing system include:  
+* Not required to run in a real-time (stream processing) environment; can be scheduled to run overnight, for instance.
+* A volume of data is processed (not a single record).
+* Runs at a scheduled time or interval (usually after hours).
+* Avoid human error, as well as the cost of human labor to perform the work.
+
+Alternatives to batch processing:  
+* Stream processing: process data in real time, as it arrives: not ideal for this use case, as the system only runs once a month.
+
+How did we get here? By asking the questions below, and answering yes to one or more of them:
+* Are there multiple manual tasks that need to be executed in a specific order?
+* How are these tasks checked for quality?
+* Is there a need to process a large volume of data?
+
 
 ![Batch Processing](images/batch_processing.png)
 
