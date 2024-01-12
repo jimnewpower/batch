@@ -126,11 +126,13 @@ Batch Job Execution Table
 | ...         | ...       | ... |
 
 # Middle-tier
+The middle-tier will implement all [logical and domain-specific components](#logical-and-domain-specific-components) as well as the [low-level design patterns](#low-level-design-patterns). The middle-tier will be implemented as a spring boot application, and will expose an API to initiate batch jobs. The API will accept a request to initiate a batch job, and return a job id. The API will also accept a job id and return the status of the job. The API will be secured using OAuth2.0, and will require a bearer token to access. The API will be implemented using the [OpenAPI Specification](https://swagger.io/specification/).
+
 * An API to initiate batch jobs: the API will accept a request to initiate a batch job, and return a job id.
 * Business logic to execute batch payment jobs
+* Rulesets for compliance checking, etc.
 * Error handling, monitoring, and reporting
 * Security: data is encrypted in transit and at rest. Authentication for API calls. Protect account information and API credentials.
-* 
 
 # Low-Level Design Patterns
 * Chain of Responsibility: each step in the batch job is sequentially executed, and the current step can initiate the call to the next step.
