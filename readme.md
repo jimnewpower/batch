@@ -1,5 +1,5 @@
 # Problem
-Build a credit card payment system to integrate with an existing expense reporting application and/or its data. The system shall aggregate charges for a given time period for a given employee or contractor, and then initiate a bank transfer to pay the credit card bill on their behalf. The system shall be an automated, end-of-cycle process that runs at a specified time interval. Note that logic shall be applied in order to validate or invalidate specific charges based on an existing expert system (part of ERPlus).
+Build a credit card payment system to integrate with an existing expense reporting application and/or its data. The system shall aggregate charges from a given time period for each employee or contractor, and then initiate a bank transfer to pay the credit card bill on their behalf. The system shall be an automated, end-of-cycle process that runs at a specified time interval. Note that logic shall be applied in order to validate or invalidate specific charges based on an existing expert system (part of ERPlus).
 
 # Prerequisites
 * Enroll in ACH services with bank(s). Securely store credentials.
@@ -9,7 +9,7 @@ Build a credit card payment system to integrate with an existing expense reporti
 # Assumptions
 * A corporate credit card is associated with an employee or contractor within the system.
 * A monthly credit card statement can be generated for each employee or contractor.
-* A payment date can be determined for any given corporate credit card, and credit card bills are paid in full monthly.
+* A payment date can be determined for any given corporate credit card, and credit card bills are paid in full monthly. While the credit card bill is paid in full, the employee or contractor may still owe the company money for non-compliant charges.
 * Credit card disputes are handled outside of the system.
 * Logic shall be developed to reconcile expense-reporting system data with credit card charges. Any discrepancies will be reported to the employee or contractor.
 
