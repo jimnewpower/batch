@@ -77,7 +77,7 @@ Transaction Table
 | Column Name | Data Type | Description |
 | ----------- | --------- | ----------- |
 | transaction_id | UUID   | Unique id for the transaction |
-| employee_id    | UUID   | Unique id for the user |
+| employee_id    | UUID   | (FK) Unique id for the user |
 | vendor         | VARCHAR| Vendor name |
 | amount         | VARCHAR| Transaction amount in USD |
 | timestamp      | DATE   | Transaction timestamp |
