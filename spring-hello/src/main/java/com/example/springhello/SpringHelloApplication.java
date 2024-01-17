@@ -1,0 +1,24 @@
+package com.example.springhello;
+
+import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@EnableBatchProcessing
+@SpringBootApplication
+public class SpringHelloApplication {
+
+    @Autowired
+    private JobBuilder jobBuilder;
+
+    @Autowired
+    private StepBuilder stepBuilder;
+
+    public static void main(String[] args) {
+        SpringApplication.run(SpringHelloApplication.class, args);
+    }
+
+}

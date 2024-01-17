@@ -44,7 +44,7 @@ Scalability is not anticipated to be an issue due to relatively the low volume o
 The batch system should have its own database, separated from the current expense-reporting database. This will require a preprocessor to extract the data from the expense-reporting database and load it into the batch database. Keeping the databases separate will allow the batch system to be developed and tested independently of the expense-reporting system.
 
 # Logical and Domain-specific Components
-* Data ingestor: read pertient data over the specified time period from the database.
+* Data ingestor: read pertinent data over the specified time period from the database.
 * Charge aggregator: aggregates charges for a given time period for a given employee or contractor, and stores data in the batch job repository.
 * Reconciliator: reconciles expense-reporting system data with credit card charges.
 * Compliance checker: checks for charge compliance by applying business rules, and whether given employee or contractor is authorized to make the charge.
