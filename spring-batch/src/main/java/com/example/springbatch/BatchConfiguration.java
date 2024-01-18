@@ -21,25 +21,25 @@ public class BatchConfiguration {
 
     // tag::readerwriterprocessor[]
     @Bean
-    public FlatFileItemReader<Person> reader() {
-        return new FlatFileItemReaderBuilder<Person>()
-                .name("personItemReader")
-                .resource(new ClassPathResource("sample-data.csv"))
+    public FlatFileItemReader<EmployeeTransaction> reader() {
+        return new FlatFileItemReaderBuilder<EmployeeTransaction>()
+                .name("employeeTransactionItemReader")
+                .resource(new ClassPathResource("mock_transactions.csv"))
                 .delimited()
-                .names("firstName", "lastName")
-                .targetType(Person.class)
+                .names("employeeId","transactionId")
+                .targetType(EmployeeTransaction.class)
                 .build();
     }
 
     @Bean
-    public PersonItemProcessor processor() {
-        return new PersonItemProcessor();
+    public TransactionProcessor processor() {
+        return new TransactionProcessor();
     }
 
     @Bean
-    public JdbcBatchItemWriter<Person> writer(DataSource dataSource) {
-        return new JdbcBatchItemWriterBuilder<Person>()
-                .sql("INSERT INTO people (first_name, last_name) VALUES (:firstName, :lastName)")
+    public JdbcBatchItemWriter<EmployeeTransactionJoin> writer(DataSource dataSource) {
+        return new JdbcBatchItemWriterBuilder<EmployeeTransactionJoin>()
+                .sql("INSERT INTO employee_transaction_join (employee_id, first_name, last_name, employee_number, transaction_id, timestamp, vendor, amount) VALUES (:employeeId, :firstName, :lastName, :employeeNumber, :transactionId, :timestamp, :vendor, :amount)")
                 .dataSource(dataSource)
                 .beanMapped()
                 .build();
@@ -48,8 +48,8 @@ public class BatchConfiguration {
 
     // tag::jobstep[]
     @Bean
-    public Job importUserJob(JobRepository jobRepository, Step step1, JobCompletionNotificationListener listener) {
-        return new JobBuilder("importUserJob", jobRepository)
+    public Job importEmployeeTransactionJob(JobRepository jobRepository, Step step1, JobCompletionNotificationListener listener) {
+        return new JobBuilder("importUserTransactionJob", jobRepository)
                 .listener(listener)
                 .start(step1)
                 .build();
@@ -57,9 +57,9 @@ public class BatchConfiguration {
 
     @Bean
     public Step step1(JobRepository jobRepository, DataSourceTransactionManager transactionManager,
-                      FlatFileItemReader<Person> reader, PersonItemProcessor processor, JdbcBatchItemWriter<Person> writer) {
+                      FlatFileItemReader<EmployeeTransaction> reader, TransactionProcessor processor, JdbcBatchItemWriter<EmployeeTransactionJoin> writer) {
         return new StepBuilder("step1", jobRepository)
-                .<Person, Person> chunk(3, transactionManager)
+                .<EmployeeTransaction, EmployeeTransactionJoin> chunk(3, transactionManager)
                 .reader(reader)
                 .processor(processor)
                 .writer(writer)

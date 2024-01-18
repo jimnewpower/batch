@@ -32,6 +32,10 @@ public class EasyApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        new DataHandler().translateCSVToSQLInsertText(EMPLOYEES_FILENAME, "employee", "(employee_id, first_name, last_name, employee_number)");
+        new DataHandler().translateCSVToSQLInsertText(TRANSACTIONS_DB_FILENAME, "transaction", "(transaction_id, timestamp, vendor, amount)");
+        new DataHandler().translateCSVToSQLInsertText(TRANSACTIONS_FILENAME, "employee_transaction", "(employee_id, transaction_id)");
+
         TransactionsDatabase transactionsDatabase = loadTransactionsDB();
         EmployeesDatabase employeesDatabase = loadEmployeesDB();
 
