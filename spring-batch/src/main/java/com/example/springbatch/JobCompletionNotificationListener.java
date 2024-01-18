@@ -10,8 +10,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.text.NumberFormat;
+import java.util.Comparator;
 import java.util.List;
 import java.util.OptionalDouble;
+import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 
 @Component
@@ -32,7 +34,9 @@ public class JobCompletionNotificationListener implements JobExecutionListener {
 
             List<EmployeeTransactionJoin> allTransactions = jdbcTemplate
                     .query("SELECT employee_id, first_name, last_name, employee_number, transaction_id, timestamp, vendor, amount FROM employee_transaction_join", new DataClassRowMapper<>(EmployeeTransactionJoin.class))
-                    .stream().toList();
+                    .stream()
+                    .sorted(Comparator.comparing(EmployeeTransactionJoin::getEmployeeId).thenComparing(EmployeeTransactionJoin::getTimestamp))
+                    .toList();
 
             allTransactions
                     .forEach(join -> log.info(String.format("%15s %15s %9s %20s %20s", join.getFirstName(), join.getLastName(), NumberFormat.getCurrencyInstance().format(Double.parseDouble(join.getAmount())), join.getVendor(), join.getTimestamp())));
