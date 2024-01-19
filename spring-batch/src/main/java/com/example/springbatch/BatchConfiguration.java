@@ -5,6 +5,7 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.batch.item.file.FlatFileItemReader;
@@ -32,7 +33,7 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public TransactionProcessor processor() {
+    public ItemProcessor<EmployeeTransaction, EmployeeTransactionJoin> processor() {
         return new TransactionProcessor();
     }
 
@@ -49,21 +50,25 @@ public class BatchConfiguration {
     // tag::jobstep[]
     @Bean
     public Job importEmployeeTransactionJob(JobRepository jobRepository, Step step1, JobCompletionNotificationListener listener) {
-        return new JobBuilder("importUserTransactionJob", jobRepository)
+        return new JobBuilder("importEmployeeTransactionJob", jobRepository)
                 .listener(listener)
                 .start(step1)
                 .build();
     }
 
     @Bean
-    public Step step1(JobRepository jobRepository, DataSourceTransactionManager transactionManager,
-                      FlatFileItemReader<EmployeeTransaction> reader, TransactionProcessor processor, JdbcBatchItemWriter<EmployeeTransactionJoin> writer) {
+    public Step step1(JobRepository jobRepository,
+                      DataSourceTransactionManager transactionManager,
+                      FlatFileItemReader<EmployeeTransaction> reader,
+                      ItemProcessor<EmployeeTransaction, EmployeeTransactionJoin> processor,
+                      JdbcBatchItemWriter<EmployeeTransactionJoin> writer) {
         return new StepBuilder("step1", jobRepository)
-                .<EmployeeTransaction, EmployeeTransactionJoin> chunk(3, transactionManager)
+                .<EmployeeTransaction, EmployeeTransactionJoin> chunk(50, transactionManager)
                 .reader(reader)
                 .processor(processor)
                 .writer(writer)
                 .build();
     }
     // end::jobstep[]
+
 }

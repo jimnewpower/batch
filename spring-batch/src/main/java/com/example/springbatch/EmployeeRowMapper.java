@@ -15,13 +15,6 @@ public class EmployeeRowMapper implements RowMapper<Employee> {
             String first = resultSet.getString("first_name");
             String last = resultSet.getString("last_name");
             String number = resultSet.getString("employee_number");
-
-            log.info("id: " + id);
-            log.info("employeeId: " + employeeId);
-            log.info("first: " + first);
-            log.info("last: " + last);
-            log.info("number: " + number);
-
             return new Employee(id, employeeId, first, last, number);
         }
 }

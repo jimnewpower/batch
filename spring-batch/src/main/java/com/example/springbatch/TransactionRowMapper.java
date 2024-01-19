@@ -15,13 +15,6 @@ public class TransactionRowMapper implements RowMapper<Transaction> {
         String timestamp = resultSet.getString("timestamp");
         String vendor = resultSet.getString("vendor");
         String amount = resultSet.getString("amount");
-
-        log.info("id: " + id);
-        log.info("transactionId: " + transactionId);
-        log.info("timestamp: " + timestamp);
-        log.info("vendor: " + vendor);
-        log.info("amount: " + amount);
-
         return new Transaction(id, transactionId, timestamp, vendor, amount);
     }
 }

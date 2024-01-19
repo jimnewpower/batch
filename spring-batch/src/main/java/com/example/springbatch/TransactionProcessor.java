@@ -5,7 +5,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TransactionProcessor implements ItemProcessor<EmployeeTransaction, EmployeeTransactionJoin> {
 
     private static final Logger log = LoggerFactory.getLogger(TransactionProcessor.class);
@@ -15,14 +17,10 @@ public class TransactionProcessor implements ItemProcessor<EmployeeTransaction, 
 
     @Override
     public EmployeeTransactionJoin process(final EmployeeTransaction employeeTransaction) throws Exception {
-        log.info("Processing (" + employeeTransaction + ")");
-
         String employeeId = employeeTransaction.employeeId();
         if (employeeId == null) {
             throw new IllegalArgumentException("employeeId is null");
         }
-
-        log.info("employeeId: " + employeeId);
 
         Employee employee = getEmployee(employeeId);
         if (employee == null) {
@@ -34,11 +32,13 @@ public class TransactionProcessor implements ItemProcessor<EmployeeTransaction, 
             throw new IllegalArgumentException("transactionId is null");
         }
 
-        log.info("transactionId: " + transactionId);
-
         Transaction transaction = getTransaction(transactionId);
         if (transaction == null) {
             throw new IllegalArgumentException("transaction is null");
+        }
+
+        if (Math.random() < 0.1) {
+            throw new IllegalArgumentException("Randomly throwing an exception");
         }
 
         final EmployeeTransactionJoin userTransactionJoin = new EmployeeTransactionJoin(
@@ -52,15 +52,13 @@ public class TransactionProcessor implements ItemProcessor<EmployeeTransaction, 
                 transaction.getAmount()
         );
 
-        log.info("Converting (" + employeeTransaction + ") into (" + userTransactionJoin + ")");
+        log.info("Converting " + employeeTransaction + " into " + userTransactionJoin);
 
         return userTransactionJoin;
     }
 
     private Employee getEmployee(String employeeId) {
         final String sqlQuery = "SELECT id, employee_id, first_name, last_name, employee_number FROM employee WHERE employee_id = ?";
-        log.info("sqlQuery: " + sqlQuery);
-        log.info("employeeId: " + employeeId);
         return jdbcTemplate.queryForObject(
                 sqlQuery,
                 new Object[]{employeeId},
@@ -70,8 +68,6 @@ public class TransactionProcessor implements ItemProcessor<EmployeeTransaction, 
 
     private Transaction getTransaction(String transactionId) {
         final String sqlQuery = "SELECT id, transaction_id, timestamp, vendor, amount FROM transaction WHERE transaction_id = ?";
-        log.info("sqlQuery: " + sqlQuery);
-        log.info("transactionId: " + transactionId);
         return jdbcTemplate.queryForObject(
                 sqlQuery,
                 new Object[]{transactionId},
