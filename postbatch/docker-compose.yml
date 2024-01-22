@@ -1,0 +1,20 @@
+version: '3.3'
+services:
+  postgredb:
+    container_name: my-postgres
+    image: postgres:alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postbatch
+      POSTGRES_DB: postbatch
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    expose:
+      - 5432
+
+networks:
+  default:
+    name: postgres_service_default
